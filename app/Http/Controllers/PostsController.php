@@ -55,7 +55,33 @@ class PostsController extends Controller
         ], 200);
     }
 
-    public function update($id) {}
+    public function update(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'content' => 'required|string|max:255',
+            'img_url' => 'nullable'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()
+            ], 400);
+        }
+
+        $post = Post::find($id);
+
+        $post->content = $request->content;
+        $post->img_url = $request->img_url;
+
+        $post->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Update data has successful',
+            'data' => $post
+        ], 200);
+    }
 
     public function destroy($id) {}
 }
