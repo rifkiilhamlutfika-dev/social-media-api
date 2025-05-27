@@ -85,6 +85,13 @@ class PostsController extends Controller
 
     public function destroy(int $id)
     {
+        if (!Post::find($id)) {
+            return response()->json([
+                'success' => false,
+                'message' => "post id $id not found"
+            ], 404);
+        }
+
         Post::destroy($id);
 
         return response()->json([
