@@ -83,5 +83,13 @@ class PostsController extends Controller
         ], 200);
     }
 
-    public function destroy($id) {}
+    public function destroy(int $id)
+    {
+        Post::destroy($id);
+
+        return response()->json([
+            'success' => true,
+            'message' => "Post id $id has been deleted"
+        ], 200);
+    }
 }
