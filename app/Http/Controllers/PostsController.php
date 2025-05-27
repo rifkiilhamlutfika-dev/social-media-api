@@ -46,7 +46,14 @@ class PostsController extends Controller
         ], 201);
     }
 
-    public function show($id) {}
+    public function show($id)
+    {
+        $post = Post::find($id);
+        return response()->json([
+            'success' => true,
+            'data' => $post
+        ], 200);
+    }
 
     public function update($id) {}
 
