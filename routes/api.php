@@ -33,6 +33,7 @@ Route::prefix('v1')->group(function () {
     Route::prefix('messages')->group(function () {
         Route::post('/', [MessagesController::class, 'store'])->name('messages.store');
         Route::get('/{id}', [MessagesController::class, 'show'])->name('messages.show');
+        Route::get('/by/{user_id}', [MessagesController::class, 'getMessagesByID'])->name('messages.getMessagesByID');
         Route::delete('/{id}', [MessagesController::class, 'destroy'])->name('messages.destroy');
     });
 });
