@@ -6,14 +6,16 @@ use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Throwable;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class CommentsController extends Controller
 {
     public function store(Request $request)
     {
+        $user = JWTAuth::parseToken()->authenticate();
+
         $validate = Validator::make($request->all(), [
             'post_id' => 'required',
-            'user_id' => 'required',
             'content' => 'required|string|max:255'
         ]);
 
@@ -27,7 +29,7 @@ class CommentsController extends Controller
         try {
             $comment = Comment::create([
                 'post_id' => $request->post_id,
-                'user_id' => $request->user_id,
+                'user_id' => $user->id,
                 'content' => $request->content,
                 'created_at' => now(),
                 'updated_at' => now()

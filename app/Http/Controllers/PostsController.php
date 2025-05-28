@@ -3,14 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class PostsController extends Controller
 {
     public function index()
     {
-        $posts = Post::all();
+        $posts = Post::with(['user:id,name', 'comments' => function ($query) {
+            $query->select('post_id', 'user_id', 'content', 'updated_at')->with(['user:id,name']);
+        }, 'likes'])->get();
 
         return response()->json([
             'success' => true,
@@ -20,8 +24,9 @@ class PostsController extends Controller
 
     public function store(Request $request)
     {
+        $user = JWTAuth::parseToken()->authenticate();
+
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required|integer',
             'content' => 'required|string|max:255',
             'img_url' => 'nullable'
         ]);
@@ -34,7 +39,7 @@ class PostsController extends Controller
         }
 
         $post = Post::create([
-            'user_id' => $request->user_id,
+            'user_id' => $user->id,
             'content' => $request->content,
             'img_url' => $request->img_url
         ]);
