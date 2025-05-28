@@ -1,17 +1,16 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostsController;
 use App\Http\Controllers\CommentsController;
+use App\Http\Controllers\JWTAuthController;
 use App\Http\Controllers\LikesController;
 use App\Http\Controllers\MessagesController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
-
 Route::prefix('v1')->group(function () {
+    Route::post('/register', [JWTAuthController::class, 'register'])->name('register');
+    Route::post('/login', [JWTAuthController::class, 'login'])->name('login');
+
     Route::prefix('posts')->group(function () {
         Route::get("/", [PostsController::class, 'index'])->name('posts.index'); //get all datas
         Route::post('/', [PostsController::class, 'store'])->name('posts.store');
